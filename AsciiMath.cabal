@@ -3,11 +3,11 @@ version:              0.1.0.0
 synopsis:             Compiler from ASCIIMath to LaTeX
 description:          AsciiMath is a Haskell library for converting from
                       asciimath to LaTeX. See README.md for further information.
-homepage:             https://github.com/Kerl13/AsciiMath
+homepage:             https://github.com/zandroidius/AsciiMath
 license:              MIT
 license-file:         LICENSE
-author:               Martin Pépin
-maintainer:           kerl@wkerl.me
+author:               Alexander C. Bodoh
+maintainer:           alexander.c.bodoh@gmail.com
 -- copyright:
 -- category:
 build-type:           Simple
@@ -15,7 +15,7 @@ extra-source-files:   README.md
 cabal-version:        >=1.10
 
 library
-  build-depends:        containers, array, base >=4.6 && <5
+  build-depends:        text, containers, array, base >=4.6 && <5
   other-modules:        Parser, Lexer, Ast, TeXWriter, Passes, Exception
   exposed-modules:      AsciiMath
   build-tools:          happy, alex
@@ -33,7 +33,7 @@ executable asciimath
 
 executable pandoc-asciimath
   main-is:              Pandoc-AsciiMath.hs
-  build-depends:        AsciiMath, pandoc-types, base
+  build-depends:        text, AsciiMath, pandoc-types, base
   ghc-options:          -Wall -threaded
   default-language:     Haskell2010
   hs-source-dirs:       src/bin
@@ -49,4 +49,4 @@ test-suite asciimath-test
 
 source-repository head
   type:                 git
-  location:             https://github.com/Kerl13/AsciiMath
+  location:             https://github.com/zandroidius/AsciiMath
