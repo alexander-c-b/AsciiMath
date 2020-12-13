@@ -1,6 +1,7 @@
 *.swp
 dist/
+result
+dist-newstyle/
 pandoc-asciimath
 asciimath
-.stack-work
 cabal-helper*
