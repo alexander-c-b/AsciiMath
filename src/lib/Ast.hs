@@ -2,7 +2,7 @@ module Ast where
 import Lexer (Position(..))
 
 -- Constants : variables, numbers, etc.
-data Constant_ =
+data Constant =
   Letter Char
   | Number String
   | GreekLetter String
@@ -29,33 +29,28 @@ data Constant_ =
   -- Additionnal symbols
   | Comma | Dot | Semicolon | Quote | Facto
   deriving (Show, Eq)
-data Constant = Constant Constant_ Position deriving (Show, Eq)
 
 -- Unary operators
-data UnaryOp_ =
+data UnaryOp =
   Usqrt | Utext
   | Ubb | Ubbb | Ucc | Utt | Ufr | Usf
   | Utilde | Uhat | Ubar | Uul | Uvec | Udot | Uddot
   deriving (Show, Eq)
-data UnaryOp = UnaryOp UnaryOp_ Position deriving (Show, Eq)
 
 -- Binary operators
-data BinaryOp_ = BFrac | BRoot | BStackRel deriving (Show, Eq)
-data BinaryOp = BinaryOp BinaryOp_ Position deriving (Show, Eq)
+data BinaryOp = BFrac | BRoot | BStackRel deriving (Show, Eq)
 
 -- Left brackets
-data LBracket_ = LPar | LCro | LBra | LChe | LBraCons deriving (Show, Eq)
-data LBracket = LBracket LBracket_ Position deriving (Show, Eq)
+data LBracket = LPar | LCro | LBra | LChe | LBraCons deriving (Show, Eq)
 
 -- Right brackets
-data RBracket_ = RPar | RCro | RBra | RChe | RBraCons deriving (Show, Eq)
-data RBracket = RBracket RBracket_ Position deriving (Show, Eq)
+data RBracket = RPar | RCro | RBra | RChe | RBraCons deriving (Show, Eq)
 
 -- Matrix type
 data MatrixType = RawMatrix | ColMatrix deriving (Show, Eq)
 
 -- Simple expressions
-data SimpleExpr_ =
+data SimpleExpr =
   SEConst Constant
   | Delimited LBracket Code RBracket
   | Matrix MatrixType [[Code]]
@@ -63,17 +58,15 @@ data SimpleExpr_ =
   | BinaryApp BinaryOp SimpleExpr SimpleExpr
   | Raw String  -- raw text, redered in a \textrm
   deriving(Show, Eq)
-data SimpleExpr = SimpleExpr SimpleExpr_ Position deriving (Show, Eq)
 
 -- Global expressions
-data Expr_ =
+data Expr =
   Simple SimpleExpr
   | Frac SimpleExpr SimpleExpr
   | Under SimpleExpr SimpleExpr
   | Super SimpleExpr SimpleExpr
   | SubSuper SimpleExpr SimpleExpr SimpleExpr
   deriving (Show, Eq)
-data Expr = Expr Expr_ Position deriving (Show, Eq)
 
 -- Whole asciimath code
 type Code = [Expr]

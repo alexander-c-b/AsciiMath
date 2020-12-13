@@ -142,171 +142,148 @@ code:
     | expr code { $1 : $2 }
 
 expr:
-    simpleExpr  { let (SimpleExpr _ pos) = $1 in Expr (Simple $1) pos }
-    | simpleExpr '/' simpleExpr
-                { let (SimpleExpr _ p1) = $1 in
-                  let (SimpleExpr _ p3) = $3 in
-                  Expr (Frac $1 $3) (pextr p1 p3) }
-    | simpleExpr '_' simpleExpr
-                { let (SimpleExpr _ p1) = $1 in
-                  let (SimpleExpr _ p2) = $3 in
-                  Expr (Under $1 $3) (pextr p1 p2) }
-    | simpleExpr '^' simpleExpr
-                { let (SimpleExpr _ p1) = $1 in
-                  let (SimpleExpr _ p2) = $3 in
-                  Expr (Super $1 $3) (pextr p1 p2) }
-    | simpleExpr '_' simpleExpr '^' simpleExpr
-                { let (SimpleExpr _ p1) = $1 in
-                  let (SimpleExpr _ p5) = $5 in
-                  Expr (SubSuper $1 $3 $5) (pextr p1 p5) }
+    simpleExpr                                 { Simple $1 }
+    | simpleExpr '/' simpleExpr                { Frac $1 $3 }
+    | simpleExpr '_' simpleExpr                { Under $1 $3 }
+    | simpleExpr '^' simpleExpr                { Super $1 $3 }
+    | simpleExpr '_' simpleExpr '^' simpleExpr { SubSuper $1 $3 $5 }
 
 const:
-    LETTER        { let (LETTER s, p) = $1 in Constant (Letter s) p }
-    | NUM         { let (NUM n, p) = $1 in Constant (Number n) p }
-    | GREEK       { let (GREEK s, p) = $1 in Constant (GreekLetter s) p }
-    | STDFUN      { let (STDFUN s, p) = $1 in Constant (StdFun s) p }
+    LETTER        { let (LETTER s, _) = $1 in Letter s }
+    | NUM         { let (NUM n,    _) = $1 in Number n }
+    | GREEK       { let (GREEK s,  _) = $1 in GreekLetter s }
+    | STDFUN      { let (STDFUN s, _) = $1 in StdFun s }
     -- Operation symbols
-    | ADD         { cst $1 Add }
-    | SUB         { cst $1 Sub }
-    | MUL         { cst $1 Mul }
-    | MMUL        { cst $1 Mmul }
-    | MMMUL       { cst $1 Mmmul }
-    | SSLASH      { cst $1 Sslash }
-    | BBSLASH     { cst $1 Bbslash }
-    | TIMES       { cst $1 Times }
-    | DIV         { cst $1 Div }
-    | COMP        { cst $1 Comp }
-    | OPLUS       { cst $1 Oplus }
-    | OTIMES      { cst $1 Otimes }
-    | ODOT        { cst $1 Odot }
-    | SUM         { cst $1 Sum }
-    | PROD        { cst $1 Prod }
-    | WEDGE       { cst $1 Wedge }
-    | WWEDGE      { cst $1 Wwedge }
-    | VV          { cst $1 Vv }
-    | VVV         { cst $1 Vvv }
-    | NN          { cst $1 Nn }
-    | NNN         { cst $1 Nnn }
-    | UU          { cst $1 Uu }
-    | UUU         { cst $1 Uuu }
+    | ADD         { Add }
+    | SUB         { Sub }
+    | MUL         { Mul }
+    | MMUL        { Mmul }
+    | MMMUL       { Mmmul }
+    | SSLASH      { Sslash }
+    | BBSLASH     { Bbslash }
+    | TIMES       { Times }
+    | DIV         { Div }
+    | COMP        { Comp }
+    | OPLUS       { Oplus }
+    | OTIMES      { Otimes }
+    | ODOT        { Odot }
+    | SUM         { Sum }
+    | PROD        { Prod }
+    | WEDGE       { Wedge }
+    | WWEDGE      { Wwedge }
+    | VV          { Vv }
+    | VVV         { Vvv }
+    | NN          { Nn }
+    | NNN         { Nnn }
+    | UU          { Uu }
+    | UUU         { Uuu }
     -- Miscellaneous symbols
-    | INT         { cst $1 Inte }
-    | OINT        { cst $1 Oint }
-    | DEL         { cst $1 Del }
-    | GRAD        { cst $1 Grad }
-    | ADDSUB      { cst $1 Addsub }
-    | VOID        { cst $1 Void }
-    | INFTY       { cst $1 Infty }
-    | ALEPH       { cst $1 Aleph }
-    | ANGLE       { cst $1 Angle }
-    | THEREFORE   { cst $1 Therefore }
-    | ABS         { cst $1 Abs }
-    | CDOTS       { cst $1 Cdots }
-    | VDOTS       { cst $1 Vdots }
-    | DDOTS       { cst $1 Ddots }
-    | BSLASH      { cst $1 Bslash }
-    | QUAD        { cst $1 Quad }
-    | SPACE       { cst $1 Space }
-    | DIAMOND     { cst $1 Diamond }
-    | SQUARE      { cst $1 Square }
-    | LFLOOR      { cst $1 Lfloor }
-    | RFLOOR      { cst $1 Rfloor }
-    | LCEIL       { cst $1 Lceil }
-    | RCEIL       { cst $1 Rceil }
-    | CC          { cst $1 Cc }
-    | ENSNN       { cst $1 Ensnn }
-    | QQ          { cst $1 Qq }
-    | RR          { cst $1 Rr }
-    | ZZ          { cst $1 Zz }
+    | INT         { Inte }
+    | OINT        { Oint }
+    | DEL         { Del }
+    | GRAD        { Grad }
+    | ADDSUB      { Addsub }
+    | VOID        { Void }
+    | INFTY       { Infty }
+    | ALEPH       { Aleph }
+    | ANGLE       { Angle }
+    | THEREFORE   { Therefore }
+    | ABS         { Abs }
+    | CDOTS       { Cdots }
+    | VDOTS       { Vdots }
+    | DDOTS       { Ddots }
+    | BSLASH      { Bslash }
+    | QUAD        { Quad }
+    | SPACE       { Space }
+    | DIAMOND     { Diamond }
+    | SQUARE      { Square }
+    | LFLOOR      { Lfloor }
+    | RFLOOR      { Rfloor }
+    | LCEIL       { Lceil }
+    | RCEIL       { Rceil }
+    | CC          { Cc }
+    | ENSNN       { Ensnn }
+    | QQ          { Qq }
+    | RR          { Rr }
+    | ZZ          { Zz }
     -- Relation symbols
-    | EQ          { cst $1 Eq }
-    | NEQ         { cst $1 Neq }
-    | LT          { cst $1 Lt }
-    | GT          { cst $1 Gt }
-    | LE          { cst $1 Le }
-    | GE          { cst $1 Ge }
-    | PREC        { cst $1 Prec }
-    | SUCC        { cst $1 Succ }
-    | IN          { cst $1 In }
-    | NOTIN       { cst $1 Notin }
-    | SUBSET      { cst $1 Subset }
-    | SUPSET      { cst $1 Supset }
-    | SUBSETE     { cst $1 Subsete }
-    | SUPSETE     { cst $1 Supsete }
-    | MOD         { cst $1 Mod }
-    | CONGR       { cst $1 Congr }
-    | APPROX      { cst $1 Approx }
-    | PROP        { cst $1 Prop }
+    | EQ          { Eq }
+    | NEQ         { Neq }
+    | LT          { Lt }
+    | GT          { Gt }
+    | LE          { Le }
+    | GE          { Ge }
+    | PREC        { Prec }
+    | SUCC        { Succ }
+    | IN          { In }
+    | NOTIN       { Notin }
+    | SUBSET      { Subset }
+    | SUPSET      { Supset }
+    | SUBSETE     { Subsete }
+    | SUPSETE     { Supsete }
+    | MOD         { Mod }
+    | CONGR       { Congr }
+    | APPROX      { Approx }
+    | PROP        { Prop }
     -- Logical symbols
-    | AND         { cst $1 And }
-    | OR          { cst $1 Or }
-    | NOT         { cst $1 Not }
-    | IMPLIES     { cst $1 Implies }
-    | IF          { cst $1 If }
-    | IFF         { cst $1 Iff }
-    | FORALL      { cst $1 Forall }
-    | EXISTS      { cst $1 Exists }
-    | FALSUM      { cst $1 Falsum }
-    | TAUT        { cst $1 Taut }
-    | TURNSTILE   { cst $1 Turnstile }
-    | TTURNSTILE  { cst $1 Tturnstile }
+    | AND         { And }
+    | OR          { Or }
+    | NOT         { Not }
+    | IMPLIES     { Implies }
+    | IF          { If }
+    | IFF         { Iff }
+    | FORALL      { Forall }
+    | EXISTS      { Exists }
+    | FALSUM      { Falsum }
+    | TAUT        { Taut }
+    | TURNSTILE   { Turnstile }
+    | TTURNSTILE  { Tturnstile }
     -- Arrows
-    | UARR        { cst $1 Uarr }
-    | DARR        { cst $1 Darr }
-    | LARR        { cst $1 Larr }
-    | TO          { cst $1 To }
-    | MAPSTO      { cst $1 Mapsto }
-    | HARR        { cst $1 Harr }
-    | LLARR       { cst $1 Llarr }
+    | UARR        { Uarr }
+    | DARR        { Darr }
+    | LARR        { Larr }
+    | TO          { To }
+    | MAPSTO      { Mapsto }
+    | HARR        { Harr }
+    | LLARR       { Llarr }
     -- Additionnal tokens
-    | COMMA       { cst $1 Comma }
-    | DOT         { cst $1 Dot }
-    | SEMICOLON   { cst $1 Semicolon }
-    | QUOTE       { cst $1 Quote }
-    | FACTO       { cst $1 Facto }
+    | COMMA       { Comma }
+    | DOT         { Dot }
+    | SEMICOLON   { Semicolon }
+    | QUOTE       { Quote }
+    | FACTO       { Facto }
 
 op1:
-    SQRT        { op1 $1 Usqrt }
-    | TEXT      { op1 $1 Utext }
-    | BB        { op1 $1 Ubb }
-    | BBB       { op1 $1 Ubbb }
-    | UCC       { op1 $1 Ucc }
-    | TT        { op1 $1 Utt }
-    | FR        { op1 $1 Ufr }
-    | SF        { op1 $1 Usf }
-    | TILDE     { op1 $1 Utilde }
-    | HAT       { op1 $1 Uhat }
-    | BAR       { op1 $1 Ubar }
-    | UL        { op1 $1 Uul }
-    | VEC       { op1 $1 Uvec }
-    | DOTOP     { op1 $1 Udot }
-    | DDOT      { op1 $1 Uddot }
+    SQRT        { Usqrt }
+    | TEXT      { Utext }
+    | BB        { Ubb }
+    | BBB       { Ubbb }
+    | UCC       { Ucc }
+    | TT        { Utt }
+    | FR        { Ufr }
+    | SF        { Usf }
+    | TILDE     { Utilde }
+    | HAT       { Uhat }
+    | BAR       { Ubar }
+    | UL        { Uul }
+    | VEC       { Uvec }
+    | DOTOP     { Udot }
+    | DDOT      { Uddot }
 
 op2:
-    FRAC        { op2 $1 BFrac }
-    | ROOT      { op2 $1 BRoot }
-    | STACKREL  { op2 $1 BStackRel }
+    FRAC        { BFrac }
+    | ROOT      { BRoot }
+    | STACKREL  { BStackRel }
 
-lDel : LDEL     { let (LDEL s, p) = $1 in LBracket (ldel s) p }
-
-rDel : RDEL     { let (RDEL s, p) = $1 in RBracket (rdel s) p }
+lDel : LDEL     { let (LDEL s, _) = $1 in ldel s }
+rDel : RDEL     { let (RDEL s, _) = $1 in rdel s }
 
 simpleExpr:
-    const       { let (Constant _ p) = $1 in
-                  SimpleExpr (SEConst $1) p }
-    | lDel code rDel
-                { let (LBracket _ p1) = $1 in
-                  let (RBracket _ p3) = $3 in
-                  SimpleExpr (Delimited $1 $2 $3) (pextr p1 p3) }
-    | op1 simpleExpr
-                { let (UnaryOp _ p1) = $1 in
-                  let (SimpleExpr _ p2) = $2 in
-                  SimpleExpr (UnaryApp $1 $2) (pextr p1 p2) }
-    | op2 simpleExpr simpleExpr
-                { let (BinaryOp _ p1) = $1 in
-                  let (SimpleExpr _ p3) = $3 in
-                  SimpleExpr (BinaryApp $1 $2 $3) (pextr p1 p3) }
-    | RAW       { let (RAW s, p) = $1 in SimpleExpr (Raw s) p }
+    const                       { SEConst $1 }
+    | lDel code rDel            { Delimited $1 $2 $3 }
+    | op1 simpleExpr            { UnaryApp $1 $2 }
+    | op2 simpleExpr simpleExpr { BinaryApp $1 $2 $3 }
+    | RAW                       { let (RAW s, _) = $1 in Raw s }
 
 {
 
@@ -319,30 +296,14 @@ happyError tokens =
   Left $ LexicalError (show tok) pos
 
 -- Conversion
-cst :: (Token, Position) -> Constant_ -> Constant
-cst (_, p) c = Constant c p
-
-op1 :: (Token, Position) -> UnaryOp_ -> UnaryOp
-op1 (_, p) u = UnaryOp u p
-
-op2 :: (Token, Position) -> BinaryOp_ -> BinaryOp
-op2 (_, p) b = BinaryOp b p
-
--- builds a new position which begining is the begining of the first argument
--- and which ending is the ending of the second argument
-pextr :: Position -> Position -> Position
-pextr (PositionElement a1 l c len1) (PositionElement a2 _ _ len2) =
-    PositionElement a1 l c (len1 + (a2 - a1 - 1) + len2)
-
--- Conversion
-rdel :: String -> RBracket_
+rdel :: String -> RBracket
 rdel ")" = RPar
 rdel "]" = RCro
 rdel "}" = RBra
 rdel ":)" = RChe
 rdel ":}" = RBraCons
 
-ldel :: String -> LBracket_
+ldel :: String -> LBracket
 ldel "(" = LPar
 ldel "[" = LCro
 ldel "{" = LBra

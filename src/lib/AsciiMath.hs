@@ -2,12 +2,13 @@ module AsciiMath (readAscii, writeTeX, compile, run, AsciimathException(..), ren
 
 import Control.Exception (throw)
 
-import Ast
-import Exception
-import Lexer (get_tokens)
-import Parser (parseAscii)
-import Passes (matrix)
-import TeXWriter (writeTeX)
+import Ast                           (Code)
+import Exception                     (AsciimathException(ErrorAndSource)
+                                     ,printAndExit,renderError)
+import Lexer                         (get_tokens)
+import Parser                        (parseAscii)
+import Passes                        (matrix)
+import TeXWriter                     (writeTeX)
 
 readAscii :: String -> Either AsciimathException Code
 readAscii s = return . matrix =<< parseAscii =<< get_tokens s

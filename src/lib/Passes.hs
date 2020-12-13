@@ -10,40 +10,29 @@ matrix :: Code -> Code
 matrix = map matrixExpr
 
 matrixExpr :: Expr -> Expr
-matrixExpr (Expr e pos) = Expr (matrixExpr_ e) pos
-matrixExpr_ :: Expr_ -> Expr_
-matrixExpr_ (Simple e) = Simple $ matrixSE e
-matrixExpr_ (Frac e1 e2) = Frac (matrixSE e1) (matrixSE e2)
-matrixExpr_ (Under e1 e2) = Under (matrixSE e1) (matrixSE e2)
-matrixExpr_ (Super e1 e2) = Super (matrixSE e1) (matrixSE e2)
-matrixExpr_ (SubSuper e1 e2 e3) = SubSuper (matrixSE e1) (matrixSE e2) (matrixSE e3)
+matrixExpr (Simple e) = Simple $ matrixSE e
+matrixExpr (Frac e1 e2) = Frac (matrixSE e1) (matrixSE e2)
+matrixExpr (Under e1 e2) = Under (matrixSE e1) (matrixSE e2)
+matrixExpr (Super e1 e2) = Super (matrixSE e1) (matrixSE e2)
+matrixExpr (SubSuper e1 e2 e3) = SubSuper (matrixSE e1) (matrixSE e2) (matrixSE e3)
 
 matrixSE :: SimpleExpr -> SimpleExpr
-matrixSE (SimpleExpr e pos) = SimpleExpr (matrixSE_ e) pos
-matrixSE_ :: SimpleExpr_ -> SimpleExpr_
-matrixSE_ (Delimited (LBracket LCro lpos) c (RBracket RCro rpos)) =
+matrixSE (Delimited LCro c RCro) =
     case parseSeq c of
-        Nothing -> Delimited (LBracket LCro lpos)
-                             (matrix c)
-                             (RBracket RCro rpos)
+        Nothing -> Delimited LCro (matrix c) RCro
         Just m -> Matrix RawMatrix m
-matrixSE_ (Delimited (LBracket LPar lpos) c (RBracket RPar rpos)) =
+matrixSE (Delimited LPar c RPar) =
     case parseSeq c of
-        Nothing -> Delimited (LBracket LPar lpos)
-                             (matrix c)
-                             (RBracket RPar rpos)
+        Nothing -> Delimited LPar (matrix c) RPar
         Just m -> Matrix ColMatrix m
-matrixSE_ (UnaryApp o e) = UnaryApp o (matrixSE e)
-matrixSE_ (BinaryApp o e1 e2) = BinaryApp o (matrixSE e1) (matrixSE e2)
-matrixSE_ x = x
+matrixSE (UnaryApp o e) = UnaryApp o (matrixSE e)
+matrixSE (BinaryApp o e1 e2) = BinaryApp o (matrixSE e1) (matrixSE e2)
+matrixSE x = x
 
--- Usefull predicates
-com :: SimpleExpr -> Bool
-com (SimpleExpr (SEConst (Constant Comma _)) _) = True
-com _ = False
+-- Usefull predicate
 comma :: Expr -> Bool
-comma (Expr (Simple e) _) | com e = True
-comma _ = False
+comma (Simple (SEConst Comma)) = True
+comma _                      = False
 
 -- like unwords but cuts at the symbols matching p
 split :: (a -> Bool) -> [a] -> [[a]]
@@ -53,20 +42,20 @@ split p l = case break p l of
 
 -- First step of parseSeq : match a sequence of comma-separated bracketed
 -- expression
-unbracket :: [Code] -> Maybe [(LBracket_, Code)]
+unbracket :: [Code] -> Maybe [(LBracket, Code)]
 unbracket [] = Just []
-unbracket ([Expr (Simple (SimpleExpr (Delimited lb c rb) _)) _]:cs) =
+unbracket ([Simple (Delimited lb c rb)]:cs) =
     case (lb, rb, unbracket cs) of
-        (LBracket LCro _, RBracket RCro _, Just l) -> Just ((LCro, c):l)
-        (LBracket LPar _, RBracket RPar _, Just l) -> Just ((LPar, c):l)
+        (LCro, RCro, Just l) -> Just ((LCro, c):l)
+        (LPar, RPar, Just l) -> Just ((LPar, c):l)
         _ -> Nothing
 unbracket _ = Nothing
 
-parseSeq1 :: Code -> Maybe [(LBracket_, Code)]
+parseSeq1 :: Code -> Maybe [(LBracket, Code)]
 parseSeq1 = unbracket . split comma
 
 -- Second step of parseSeq : check if all the delimiters used are similars
-parseSeq2 :: Maybe [(LBracket_, Code)] -> Maybe [[Code]]
+parseSeq2 :: Maybe [(LBracket, Code)] -> Maybe [[Code]]
 parseSeq2 Nothing = Nothing
 parseSeq2 (Just cs) =
   let (lb, _) = head cs in
