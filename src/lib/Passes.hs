@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module Passes (matrix) where
 import Ast
 
