@@ -4,8 +4,8 @@ let
   walk-ast = pkgs.fetchFromGitHub {
     owner  = "zandroidius";
     repo   = "walk-ast";
-    rev    = "624fddb77bac1ca3cead3b80cfaec3483ea3e512";
-    sha256 = "095af1fz61mc9qlaa2v3xzkhfbak3s93fmhcv0d9jq5734c9ccwk";
+    rev    = "4c671526150f9709d0fb4b73bb26b7db630bf3b6";
+    sha256 = "1qfgcrp6nb6i8qlbhc8ikj1c869wkbyq294klv3a8q9pxbmibi5g";
   };
   haskellPackages = pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: { 
