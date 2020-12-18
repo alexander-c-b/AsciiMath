@@ -46,11 +46,14 @@ data LBracket = LPar | LCro | LBra | LChe | LBraCons deriving (Show, Eq)
 -- Right brackets
 data RBracket = RPar | RCro | RBra | RChe | RBraCons deriving (Show, Eq)
 
+-- Matrix type
+data MatrixType = RawMatrix | ColMatrix deriving (Show, Eq)
+
 -- Simple expressions
 data SimpleExpr =
   SEConst Constant
   | Delimited LBracket Code RBracket
-  | Matrix [[Code]]
+  | Matrix MatrixType [[Code]]
   | UnaryApp UnaryOp SimpleExpr
   | BinaryApp BinaryOp SimpleExpr SimpleExpr
   | Raw String  -- raw text, redered in a \textrm

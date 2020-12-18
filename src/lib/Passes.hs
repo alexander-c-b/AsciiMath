@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Passes (matrix) where
 import Ast
+import Walk ()
 
 ---------------------------------
 -- Pass 1 : Recognise matrices --
