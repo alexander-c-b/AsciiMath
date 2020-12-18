@@ -74,6 +74,8 @@ import Lexer
   BSLASH      { (BSLASH, _) }
   QUAD        { (QUAD, _) }
   SPACE       { (SPACE, _) }
+  AMPERSAND   { (AMPERSAND, _) }
+  DOUBLESEMICOLON { (DOUBLESEMICOLON, _) }
   DIAMOND     { (DIAMOND, _) }
   SQUARE      { (SQUARE, _) }
   LFLOOR      { (LFLOOR, _) }
@@ -195,6 +197,8 @@ const:
     | BSLASH      { Bslash }
     | QUAD        { Quad }
     | SPACE       { Space }
+    | AMPERSAND   { Ampersand }
+    | DOUBLESEMICOLON { DoubleSemicolon }
     | DIAMOND     { Diamond }
     | SQUARE      { Square }
     | LFLOOR      { Lfloor }

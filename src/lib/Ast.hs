@@ -19,6 +19,8 @@ data Constant =
   | Angle | Therefore | Abs | Cdots | Vdots | Ddots | Bslash
   | Quad | Diamond | Square | Lfloor | Rfloor | Lceil | Rceil
   | Cc | Ensnn | Qq | Rr | Zz | Space
+  -- Matrix symbols
+  | Ampersand | DoubleSemicolon
   -- Relation symbols
   | Eq | Neq | Lt | Gt | Le | Ge | Prec | Succ
   | In | Notin | Subset | Supset | Subsete | Supsete

@@ -36,6 +36,8 @@ tokens :-
   <0>       @rdel       { \_ s -> (RDEL s, 0) }
   <0>       @sym1       { \_ s -> (check_sym1 s, 0) }
   <0>       \\\         { cst SPACE }
+  <0>       &           { cst AMPERSAND }
+  <0>       \;\;        { cst DOUBLESEMICOLON }
   <0>       "+-"        { cst ADDSUB }
   <0>       "**"        { cst MMUL }
   <0>       "//"        { cst SSLASH }
@@ -99,6 +101,8 @@ data Token =
   | ANGLE | THEREFORE | ABS | CDOTS | VDOTS | DDOTS | BSLASH
   | QUAD | DIAMOND | SQUARE | LFLOOR | RFLOOR | LCEIL | RCEIL
   | CC | ENSNN | QQ | RR | ZZ | SPACE
+  -- Matrix symbols
+  | AMPERSAND | DOUBLESEMICOLON
   -- Relation symbols
   | EQ | NEQ | LT | GT | LE | GE | PREC | SUCC
   | IN | NOTIN | SUBSET | SUPSET | SUBSETE | SUPSETE
