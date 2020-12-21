@@ -1,7 +1,11 @@
-{-# LANGUAGE LambdaCase, MultiParamTypeClasses, FlexibleContexts #-}
+{-# LANGUAGE LambdaCase
+  , MultiParamTypeClasses
+  , FlexibleContexts
+  , FlexibleInstances #-}
 module Ast (Code,Expr(..),SimpleExpr(..),RBracket(..),LBracket(..)
            ,BinaryOp(..),UnaryOp(..),Constant(..)) where
 import Control.Applicative (liftA,liftA2,liftA3)
+import Data.Traversable    (traverse)
 import Language.AST.Walk   (Walkable(..))
 
 -- Constants : variables, numbers, etc.
@@ -83,17 +87,17 @@ instance Walkable Expr Expr where
     walkM f x = walkExprM f x >>= f
     query f e = f e <> queryExpr f e
 
-instance Walkable SimpleExpr SimpleExpr where
-    walkM f x = walkSimpleExprM f x >>= f
-    query f s = f s <> querySimpleExpr f s
+instance Walkable [Expr] [Expr] where
+    walkM f es = traverse (walkExprM f) es >>= f
+    query f es = f es <> mconcat (map (queryExpr f) es)
 
-instance Walkable SimpleExpr Expr where
-    walkM = walkExprM
-    query = queryExpr
+instance Walkable [Expr]       Expr where {walkM = walkExprM; query = queryExpr}
+instance Walkable SimpleExpr   Expr where {walkM = walkExprM; query = queryExpr}
+instance Walkable [SimpleExpr] Expr where {walkM = walkExprM; query = queryExpr}
 
-instance Walkable Expr SimpleExpr where
-    walkM = walkSimpleExprM
-    query = querySimpleExpr
+instance Walkable [SimpleExpr] SimpleExpr where {walkM = walkSimpleExprM; query = querySimpleExpr}
+instance Walkable Expr         SimpleExpr where {walkM = walkSimpleExprM; query = querySimpleExpr}
+instance Walkable [Expr]       SimpleExpr where {walkM = walkSimpleExprM; query = querySimpleExpr}
 
 -- Walk functions
 walkExprM       :: (Walkable a Expr,Walkable a SimpleExpr
@@ -136,9 +140,9 @@ queryExpr f = \case
     SubSuper s1 s2 s3 -> query f s1 <> query f s2 <> query f s3
 
 querySimpleExpr f = \case
-    SEConst _            -> mempty
-    Delimited _ es _ -> query f es
-    Matrix cs            -> query f cs
-    UnaryApp _ s        -> query f s
-    BinaryApp _ s1 s2   -> query f s1 <> query f s2
-    Raw _           -> mempty
+    SEConst _         -> mempty
+    Delimited _ es _  -> query f es
+    Matrix cs         -> query f cs
+    UnaryApp _ s      -> query f s
+    BinaryApp _ s1 s2 -> query f s1 <> query f s2
+    Raw _             -> mempty
