@@ -3,10 +3,7 @@
   , FlexibleContexts
   , FlexibleInstances #-}
 module Ast (Code,Expr(..),SimpleExpr(..),RBracket(..),LBracket(..)
-           ,BinaryOp(..),UnaryOp(..),Constant(..)) where
-import Control.Applicative (liftA,liftA2,liftA3)
-import Data.Traversable    (traverse)
-import Language.AST.Walk   (Walkable(..))
+           ,BinaryOp(..),UnaryOp(..),Constant(..),walkC,walkS) where
 
 -- Constants : variables, numbers, etc.
 data Constant =
@@ -77,72 +74,28 @@ data Expr =
 -- Whole asciimath code
 type Code = [Expr]
 
-
 -----------------------
 -- AST Walking
 -----------------------
+walkC :: (Code -> Code) -> Code -> Code
+walkC f = f . walkCodeSimple (walkSimpleCode f)
 
--- Instance declarations
-instance Walkable Expr Expr where
-    walkM f x = walkExprM f x >>= f
-    query f e = f e <> queryExpr f e
+walkS :: (SimpleExpr -> SimpleExpr) -> SimpleExpr -> SimpleExpr
+walkS f = f . walkSimpleCode (walkCodeSimple f)
 
-instance Walkable [Expr] [Expr] where
-    walkM f es = traverse (walkExprM f) es >>= f
-    query f es = f es <> mconcat (map (queryExpr f) es)
+walkCodeSimple :: (SimpleExpr -> SimpleExpr) -> Code -> Code
+walkCodeSimple f = map $ \case
+    Simple s          -> Simple   (f s)
+    Frac s1 s2        -> Frac     (f s1) (f s2)
+    Under s1 s2       -> Under    (f s1) (f s2)
+    Super s1 s2       -> Super    (f s1) (f s2)
+    SubSuper s1 s2 s3 -> SubSuper (f s1) (f s2) (f s3)
 
-instance Walkable [Expr]       Expr where {walkM = walkExprM; query = queryExpr}
-instance Walkable SimpleExpr   Expr where {walkM = walkExprM; query = queryExpr}
-instance Walkable [SimpleExpr] Expr where {walkM = walkExprM; query = queryExpr}
-
-instance Walkable [SimpleExpr] SimpleExpr where {walkM = walkSimpleExprM; query = querySimpleExpr}
-instance Walkable Expr         SimpleExpr where {walkM = walkSimpleExprM; query = querySimpleExpr}
-instance Walkable [Expr]       SimpleExpr where {walkM = walkSimpleExprM; query = querySimpleExpr}
-
--- Walk functions
-walkExprM       :: (Walkable a Expr,Walkable a SimpleExpr
-                   ,Monad m,Applicative m,Functor m)
-                => (a -> m a) -> Expr -> m Expr
-walkSimpleExprM :: (Walkable a Expr,Walkable a SimpleExpr
-                   ,Monad m,Applicative m,Functor m)
-                => (a -> m a) -> SimpleExpr -> m SimpleExpr
-
-walkExprM f = \case
-    Simple s          -> (liftA Simple) (walkM f s)
-    Frac s1 s2        -> (liftA2 Frac)  (walkM f s1) (walkM f s2)
-    Under s1 s2       -> (liftA2 Under) (walkM f s1) (walkM f s2)
-    Super s1 s2       -> (liftA2 Super) (walkM f s1) (walkM f s2)
-    SubSuper s1 s2 s3 ->
-        (liftA3 SubSuper) (walkM f s1) (walkM f s2) (walkM f s3)
-
-walkSimpleExprM f = \case
-    SEConst c     -> return $ SEConst c
-    Delimited lbr es rbr ->
-        (liftA3 Delimited) (return lbr) (walkM f es) (return rbr)
-    Matrix cs     -> (liftA Matrix)    (walkM f cs)
-    UnaryApp op s -> (liftA2 UnaryApp) (return op) (walkM f s)
-    BinaryApp op s1 s2 ->
-        (liftA3 BinaryApp) (return op) (walkM f s1) (walkM f s2)
-    Raw string   -> return $ Raw string
-
--- Query functions
-queryExpr       :: (Walkable a Expr,Walkable a SimpleExpr,Monoid c)
-                => (a -> c) -> Expr -> c
-querySimpleExpr :: (Walkable a Expr,Walkable a SimpleExpr,Monoid c)
-
-                => (a -> c) -> SimpleExpr -> c
-
-queryExpr f = \case
-    Simple s          -> query f s
-    Frac s1 s2        -> query f s1 <> query f s2
-    Under s1 s2       -> query f s1 <> query f s2
-    Super s1 s2       -> query f s1 <> query f s2
-    SubSuper s1 s2 s3 -> query f s1 <> query f s2 <> query f s3
-
-querySimpleExpr f = \case
-    SEConst _         -> mempty
-    Delimited _ es _  -> query f es
-    Matrix cs         -> query f cs
-    UnaryApp _ s      -> query f s
-    BinaryApp _ s1 s2 -> query f s1 <> query f s2
-    Raw _             -> mempty
+walkSimpleCode :: (Code -> Code) -> SimpleExpr -> SimpleExpr
+walkSimpleCode f = let walkF = walkSimpleCode f in \case
+    SEConst c            -> SEConst c
+    Delimited lbr es rbr -> Delimited lbr (f es) rbr
+    Matrix cs            -> Matrix (map (map f) cs)
+    UnaryApp op s        -> UnaryApp op (walkF s)
+    BinaryApp op s1 s2   -> BinaryApp op (walkF s1) (walkF s2)
+    Raw string           -> Raw string
