@@ -58,6 +58,7 @@ writeConst = \case
     Vdots       -> cmd "vdots"
     Ddots       -> cmd "ddots"
     Bslash      -> "\\"
+    Comma       -> ","
     Quad        -> cmd "quad"
     Space       -> cmd_ " "
     Diamond     -> cmd "diamond"
@@ -151,20 +152,14 @@ writeRBracket r = cmd_ "right" ++ case r of
     RChe     -> cmd "rangle"
     RBraCons -> "."
 
--- Useful map
-mmap :: (a -> b) -> [[a]] -> [[b]]
-mmap f = map (map f)
-
 -- Writes a simple expression
 writeSimpleExpr :: SimpleExpr -> String
 writeSimpleExpr = \case
     SEConst c -> writeConst c
-    Matrix t css ->
-        let mt = (if t == RawMatrix then "bmatrix" else "pmatrix")
-            textMatrix = mmap writeCode css
-            ls = map (intercalate " & ") textMatrix
-            text = intercalate " \\\\ " ls
-         in cmdargs "begin" [mt] ++ text ++ cmdargs "end" [mt]
+    Matrix css ->
+        let expr = intercalate " \\\\ " $
+                    map (intercalate " & " . map writeTeX) css
+         in cmdargs "begin" ["matrix"] ++ expr ++ cmdargs "end" ["matrix"]
     Delimited l e r ->
         writeLBracket l ++ writeCode e ++ writeRBracket r
     UnaryApp o e ->
