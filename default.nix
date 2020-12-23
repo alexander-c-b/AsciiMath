@@ -1,3 +1,3 @@
 { pkgs ? import ./nix/pkgs.nix {}, compiler ? "ghc865" }:
 
-pkgs.haskellPackages.callCabal2nix "AsciiMath" ./. {}
+pkgs.haskell.packages.${compiler}.callCabal2nix "AsciiMath" ./. {}
