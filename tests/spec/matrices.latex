@@ -1,3 +1,9 @@
 # Matrices
-\begin{bmatrix}a & b \\ c & d\end{bmatrix}
-\begin{pmatrix}a & b \\ c & d\end{pmatrix}
+\begin{matrix}a & = & b \\  & = & c.\end{matrix}
+\left.\begin{matrix}a & b \\ c & d\end{matrix}\right.
+\left\langle \begin{matrix}a & b \\ c & d\end{matrix}\right\rangle 
+\left(\begin{matrix}a & b \\ c & d\end{matrix}\right)
+\left[\begin{matrix}a & b \\ c & d\end{matrix}\right]
+\left\{\begin{matrix}a & b \\ c & d\end{matrix}\right\}
+\left(\begin{matrix}a & b & c\end{matrix}\right)
+\left[\begin{matrix}a \\ b\end{matrix}\right]
