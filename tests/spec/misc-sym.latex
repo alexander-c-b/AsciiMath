@@ -1,5 +1,8 @@
 # Miscellaneous symbols
 \int 
+# https://github.com/alexander-c-b/AsciiMath/issues/11
+\int x\ dx+\int y\ dy
+1+\frac{dx}{dy}=1
 \oint 
 \partial 
 \nabla 

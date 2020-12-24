@@ -1,4 +1,7 @@
 int
+# https://github.com/alexander-c-b/AsciiMath/issues/11
+int x dx + int y dy
+1 + dx/dy = 1
 oint
 del
 grad
