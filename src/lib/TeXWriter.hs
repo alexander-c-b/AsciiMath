@@ -16,7 +16,7 @@ writeConst :: Constant -> String
 writeConst = \case
     -- Operation symbols
     (GreekLetter s) -> cmd s
-    (Letter c)  -> [c]
+    (Letters s) -> s
     (Number n)  -> n
     (StdFun s)  -> cmd s
     Add         -> "+"

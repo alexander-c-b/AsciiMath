@@ -79,7 +79,7 @@ tokens :-
 data Token =
   RAW String
   | WHITE
-  | LETTER Char | LETTERS_ String -- Temporary token
+  | LETTERS String
   | NUM String
   | LDEL String
   | RDEL String
@@ -180,7 +180,7 @@ check_kw s = case M.lookup s kws of
         else if S.member s std_fun then
             STDFUN s
           else
-            LETTERS_ s
+            LETTERS s
 
 sym1 :: M.Map String Token
 sym1 = M.fromList [
@@ -273,23 +273,11 @@ alexGetByte (p,_,[],(c:s)) =
   let (b:bs) = utf8Encode c in
   p' `seq`  Just (b, (p', c, bs, s))
 
-unletters :: String -> Position -> [(Token, Position)]
-unletters "" _ = []
-unletters (c:s) (PositionElement abs line col len) =
-    let hd = (LETTER c, PositionElement abs line col 1) in
-    hd:(unletters s $ PositionElement (abs+1) line (col+1) (len-1))
-unletters (c:s) (Position abs line col) =
-    let hd = (LETTER c, Position abs line col) in
-    hd:(unletters s $ Position (abs+1) line (col+1))
-
-cat :: [a] -> Either e [a] -> Either e [a]
-cat _ (Left e) = Left e
-cat l (Right l') = Right $ l ++ l'
-
 -- The scanner
 alexScanTokens :: String -> Either AsciimathException [(Token, Position)]
 alexScanTokens s = go (alexStartPos,'\n',[],s) 0
-  where go inp@(pos,_,_,str) sc =
+  where go :: AlexInput -> Int -> Either AsciimathException [(Token, Position)]
+        go inp@(pos,_,_,str) sc =
           case alexScan inp sc of
               AlexEOF -> Right []
               AlexError (errPos,_,_,remaining) ->
@@ -302,6 +290,5 @@ alexScanTokens s = go (alexStartPos,'\n',[],s) 0
                 let elt_pos = PositionElement abs line col len in
                 case tok of
                     WHITE -> go inp' new_sc
-                    LETTERS_ w -> cat (unletters w elt_pos) $ go inp' new_sc
-                    _ -> cat [(tok, elt_pos)] $ go inp' new_sc
+                    _ -> mappend [(tok, elt_pos)] <$> go inp' new_sc
 }

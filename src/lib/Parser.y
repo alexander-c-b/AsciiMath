@@ -14,7 +14,7 @@ import Lexer
 
 %token
   RAW         { (RAW _, _) }
-  LETTER      { (LETTER _, _) }
+  LETTERS     { (LETTERS _, _) }
   NUM         { (NUM _, _) }
   LDEL        { (LDEL _, _) }
   RDEL        { (RDEL _, _) }
@@ -151,10 +151,10 @@ expr:
     | simpleExpr '_' simpleExpr '^' simpleExpr { SubSuper $1 $3 $5 }
 
 const:
-    LETTER        { let (LETTER s, _) = $1 in Letter s }
-    | NUM         { let (NUM n,    _) = $1 in Number n }
-    | GREEK       { let (GREEK s,  _) = $1 in GreekLetter s }
-    | STDFUN      { let (STDFUN s, _) = $1 in StdFun s }
+    LETTERS       { let (LETTERS s, _) = $1 in Letters s }
+    | NUM         { let (NUM n,     _) = $1 in Number n }
+    | GREEK       { let (GREEK s,   _) = $1 in GreekLetter s }
+    | STDFUN      { let (STDFUN s,  _) = $1 in StdFun s }
     -- Operation symbols
     | ADD         { Add }
     | SUB         { Sub }
