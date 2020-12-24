@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Passes (passes,needsSpace,prependSpace) where
 import Data.Bool (bool)
+import Data.List (isPrefixOf)
 import Data.List.Split (splitWhen)
 import Ast (Constant(..),Code,Expr(..),SimpleExpr(..),walkC)
 
@@ -23,10 +24,10 @@ prependSpace :: Code -> Code
 prependSpace [] = []
 prependSpace (x:xs) = x : concatMap go xs
     where go :: Expr -> [Expr]
-          go e = bool (<> [Simple (SEConst Space)]) id (needsSpace e) [e]
+          go e = bool id (Simple (SEConst Space) :) (needsSpace e) [e]
 
 needsSpace :: Expr -> Bool
 needsSpace = \case
     -- Differentials; e.g. dx, dA
-    (Simple (SEConst (Letters ('d':_:[])))) -> True
+    (Simple (SEConst (Letters s))) | "d" `isPrefixOf` s -> True
     _ -> False
