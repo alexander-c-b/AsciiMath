@@ -7,7 +7,7 @@ module Ast (Code,Expr(..),SimpleExpr(..),RBracket(..),LBracket(..)
 
 -- Constants : variables, numbers, etc.
 data Constant =
-  Letter Char
+  Letters String
   | Number String
   | GreekLetter String
   | StdFun String
