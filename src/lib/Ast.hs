@@ -41,6 +41,7 @@ data UnaryOp =
   Usqrt | Utext
   | Ubb | Ubbb | Ucc | Utt | Ufr | Usf
   | Utilde | Uhat | Ubar | Uul | Uvec | Udot | Uddot
+  | Unit | Num
   deriving (Show, Eq)
 
 -- Binary operators

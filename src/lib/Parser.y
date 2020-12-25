@@ -15,7 +15,7 @@ import Lexer
 %token
   RAW         { (RAW _, _) }
   LETTERS     { (LETTERS _, _) }
-  NUM         { (NUM _, _) }
+  NUMBER      { (NUMBER _, _) }
   LDEL        { (LDEL _, _) }
   RDEL        { (RDEL _, _) }
   '/'         { (SLASH, _) }
@@ -71,6 +71,8 @@ import Lexer
   CDOTS       { (CDOTS, _) }
   VDOTS       { (VDOTS, _) }
   DDOTS       { (DDOTS, _) }
+  UNIT        { (UNIT, _) }
+  NUM         { (NUM, _) }
   BSLASH      { (BSLASH, _) }
   QUAD        { (QUAD, _) }
   SPACE       { (SPACE, _) }
@@ -152,7 +154,7 @@ expr:
 
 const:
     LETTERS       { let (LETTERS s, _) = $1 in Letters s }
-    | NUM         { let (NUM n,     _) = $1 in Number n }
+    | NUMBER      { let (NUMBER n,     _) = $1 in Number n }
     | GREEK       { let (GREEK s,   _) = $1 in GreekLetter s }
     | STDFUN      { let (STDFUN s,  _) = $1 in StdFun s }
     -- Operation symbols
@@ -273,6 +275,8 @@ op1:
     | VEC       { Uvec }
     | DOTOP     { Udot }
     | DDOT      { Uddot }
+    | UNIT      { Unit }
+    | NUM       { Num }
 
 op2:
     FRAC        { BFrac }
