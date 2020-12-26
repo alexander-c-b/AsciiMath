@@ -144,14 +144,11 @@ import Lexer
 %%
 
 -- Code, matrices, exprs {{{1
-code: exprs  { Exprs $1 }
-    | matrix { Matrix $1 }
+code: matrix { Matrix $1 }
+    | exprs  { Exprs $1 }
 
-matrix:                        { [] }
-      | matrixCols ';;' matrix { $1 : $2 }
-
-matrixCols:                     { [] }
-          | code '&' matrixCols { $1 : $2 }
+matrix: exprs      '&'  matrixCols { [$1 : $2] }
+      | matrixCols ';;' matrixRows { $1 : $2 }
 
 exprs:                 { [] }
      | expr spaceExprs { $1 : $2 }
