@@ -11,7 +11,7 @@ import Passes                        (passes)
 import TeXWriter                     (writeTeX)
 
 readAscii :: String -> Either AsciimathException Code
-readAscii s = return . passes =<< parseAscii =<< get_tokens s
+readAscii s = parseAscii =<< get_tokens s
 
 compile :: String -> Either AsciimathException String
 compile s = fmap writeTeX $ readAscii s

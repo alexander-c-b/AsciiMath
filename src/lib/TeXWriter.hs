@@ -17,6 +17,7 @@ writeConst = \case
     -- Operation symbols
     (GreekLetter s) -> cmd s
     (Letters s) -> s
+    (Diff s)    -> cmdargs "textrm" ["d"] ++ s
     (Number n)  -> n
     (StdFun s)  -> cmd s
     Add         -> "+"
