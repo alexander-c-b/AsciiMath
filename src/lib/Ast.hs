@@ -70,4 +70,4 @@ data Expr =
   deriving (Show, Eq)
 
 -- Whole asciimath code
-data Code = Matrix [[Code]] | Exprs [Expr] deriving (Show,Eq)
+data Code = Matrix [[[Expr]]] | Exprs [Expr] deriving (Show,Eq)
