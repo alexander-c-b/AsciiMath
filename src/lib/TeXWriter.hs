@@ -139,20 +139,19 @@ writeUnaryOp = \case
     Uddot  -> "ddot"
 
 -- Writes the delimiters
-writeLBracket :: LBracket -> String
-writeRBracket :: RBracket -> String
-writeLBracket l = cmd_ "left" ++ case l of
-    LPar     -> "("
-    LCro     -> "["
-    LBra     -> "\\{"
-    LChe     -> cmd "langle"
-    LBraCons -> "."
-writeRBracket r = cmd_ "right" ++ case r of
-    RPar     -> ")"
-    RCro     -> "]"
-    RBra     -> "\\}"
-    RChe     -> cmd "rangle"
-    RBraCons -> "."
+writeRightDelimiter, writeLeftDelimiter :: Delimiter -> String
+writeLeftDelimiter l = cmd_ "left" ++ case l of
+    Parenthesis  -> "("
+    Bracket      -> "["
+    Brace        -> "\\{"
+    AngleBracket -> cmd "langle"
+    Invisible    -> "."
+writeRightDelimiter r = cmd_ "right" ++ case r of
+    Parenthesis  -> ")"
+    Bracket      -> "]"
+    Brace        -> "\\}"
+    AngleBracket -> cmd "rangle"
+    Invisible    -> "."
 
 -- Writes a simple expression
 writeSimpleExpr :: SimpleExpr -> String

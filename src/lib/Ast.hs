@@ -45,7 +45,7 @@ data UnaryOp =
 data BinaryOp = BFrac | BRoot | BStackRel deriving (Show, Eq)
 
 -- Delimiters
-data Delimiter = Paren | Bracket | Brace | AngleBracket | Invisible
+data Delimiter = Parenthesis | Bracket | Brace | AngleBracket | Invisible
                  deriving (Show,Eq)
 
 -- Simple expressions

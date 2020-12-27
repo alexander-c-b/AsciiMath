@@ -318,9 +318,9 @@ op2 :  FRAC      { BFrac }
     |  STACKREL  { BStackRel }
 
 -- Delimiters {{{1
-lDel :: { LBracket }
+lDel :: { Delimiter }
 lDel :  LDEL     { let (LDEL s, _) = $1 in ldel s }
-rDel :: { RBracket }
+rDel :: { Delimiter }
 rDel :  RDEL     { let (RDEL s, _) = $1 in rdel s }
 
 -- Function Definitions {{{1
@@ -339,17 +339,17 @@ potentialSpace (Simple (SEConst (Diff _))) = (Simple (SEConst SmallSpace) :)
 potentialSpace _ = id
 
 -- Conversion
-rdel :: String -> RBracket
-rdel ")" = RPar
-rdel "]" = RCro
-rdel "}" = RBra
-rdel ":)" = RChe
-rdel ":}" = RBraCons
+rdel :: String -> Delimiter
+rdel ")"  = Parenthesis
+rdel "]"  = Bracket
+rdel "}"  = Brace
+rdel ":)" = AngleBracket
+rdel ":}" = Invisible
 
-ldel :: String -> LBracket
-ldel "(" = LPar
-ldel "[" = LCro
-ldel "{" = LBra
-ldel "(:" = LChe
-ldel "{:" = LBraCons
+ldel :: String -> Delimiter
+ldel "("  = Parenthesis
+ldel "["  = Bracket
+ldel "{"  = Brace
+ldel "(:" = AngleBracket
+ldel "{:" = Invisible
 }
