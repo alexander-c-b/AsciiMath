@@ -37,7 +37,7 @@ tokens :-
   <0>       @rdel       { \_ s -> (RDEL s, 0) }
   <0>       @sym1       { \_ s -> (check_sym1 s, 0) }
   <0>       \\\         { cst SPACE }
-  <0>       \\,         { cst SMALLSPACE }
+  <0>       \\\,        { cst SMALLSPACE }
   <0>       &           { cst AMPERSAND }
   <0>       \;\;        { cst DOUBLESEMICOLON }
   <0>       "+-"        { cst ADDSUB }
