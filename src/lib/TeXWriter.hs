@@ -62,6 +62,7 @@ writeConst = \case
     Comma       -> ","
     Quad        -> cmd "quad"
     Space       -> cmd_ " "
+    SmallSpace  -> cmd_ ","
     Diamond     -> cmd "diamond"
     Square      -> cmd "square"
     Lfloor      -> cmd "lfloor"
