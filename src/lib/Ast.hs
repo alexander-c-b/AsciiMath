@@ -44,16 +44,14 @@ data UnaryOp =
 -- Binary operators
 data BinaryOp = BFrac | BRoot | BStackRel deriving (Show, Eq)
 
--- Left brackets
-data LBracket = LPar | LCro | LBra | LChe | LBraCons deriving (Show, Eq)
-
--- Right brackets
-data RBracket = RPar | RCro | RBra | RChe | RBraCons deriving (Show, Eq)
+-- Delimiters
+data Delimiter = Paren | Bracket | Brace | AngleBracket | Invisible
+                 deriving (Show,Eq)
 
 -- Simple expressions
 data SimpleExpr =
   SEConst Constant
-  | Delimited LBracket Code RBracket
+  | Delimited Delimiter Code Delimiter
   | UnaryApp UnaryOp SimpleExpr
   | BinaryApp BinaryOp SimpleExpr SimpleExpr
   | Raw String  -- raw text, rendered in a \text
