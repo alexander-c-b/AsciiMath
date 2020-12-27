@@ -56,7 +56,7 @@ data SimpleExpr =
   | Delimited LBracket Code RBracket
   | UnaryApp UnaryOp SimpleExpr
   | BinaryApp BinaryOp SimpleExpr SimpleExpr
-  | Raw String  -- raw text, redered in a \textrm
+  | Raw String  -- raw text, rendered in a \text
   deriving(Show, Eq)
 
 -- Global expressions
