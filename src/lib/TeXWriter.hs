@@ -17,7 +17,7 @@ writeConst = \case
     -- Operation symbols
     (GreekLetter s) -> cmd s
     (Letters s) -> s
-    (Diff s)    -> cmdargs "textrm" ["d"] ++ s
+    (Diff s)    -> cmdargs "text" ["d"] ++ s
     (Number n)  -> n
     (StdFun s)  -> cmd s
     Add         -> "+"
@@ -94,11 +94,11 @@ writeConst = \case
     Approx      -> cmd "approx"
     Prop        -> cmd "propto"
     -- Logical symbols
-    And         -> cmdargs "textrm" ["and"]
-    Or          -> cmdargs "textrm" ["or"]
+    And         -> cmdargs "text" ["and"]
+    Or          -> cmdargs "text" ["or"]
     Not         -> cmd "neg"
     Implies     -> cmd "Rightarrow"
-    If          -> cmdargs "textrm" ["if"]
+    If          -> cmdargs "text" ["if"]
     Iff         -> cmd "Leftrightarrow"
     Forall      -> cmd "forall"
     Exists      -> cmd "exists"
@@ -123,7 +123,7 @@ writeConst = \case
 writeUnaryOp :: UnaryOp -> String
 writeUnaryOp = \case
     Usqrt  -> "sqrt"
-    Utext  -> "textrm"
+    Utext  -> "text"
     Ubb    -> "boldsymbol"
     Ubbb   -> "mathbb"
     Ucc    -> "mathcal"
@@ -168,7 +168,7 @@ writeSimpleExpr = \case
         cmdargs ("sqrt[" ++ writeSimpleExpr e1 ++ "]") [writeSimpleExpr e2]
     BinaryApp BStackRel e1 e2 ->
         cmdargs "stackrel" [writeSimpleExpr e1, writeSimpleExpr e2]
-    Raw s -> cmdargs "textrm" [s]
+    Raw s -> cmdargs "text" [s]
 
 -- Writes a simple expression after removing the embracing delimiters if present
 writeSimpleExprND :: SimpleExpr -> String

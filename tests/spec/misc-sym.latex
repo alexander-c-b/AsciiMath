@@ -1,8 +1,8 @@
 # Miscellaneous symbols
 \int 
 # https://github.com/alexander-c-b/AsciiMath/issues/11
-\int x\,\textrm{d}x+\int y\,\textrm{d}y
-1+\frac{\textrm{d}x}{\textrm{d}y}=1
+\int x\,\text{d}x+\int y\,\text{d}y
+1+\frac{\text{d}x}{\text{d}y}=1
 # https://github.com/alexander-c-b/AsciiMath/issues/27
 ld=2d
 \oint 

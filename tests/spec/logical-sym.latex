@@ -1,9 +1,9 @@
 # Logical symbols
-\textrm{and}
-\textrm{or}
+\text{and}
+\text{or}
 \neg 
 \Rightarrow 
-\textrm{if}
+\text{if}
 \Leftrightarrow 
 \forall 
 \exists 
