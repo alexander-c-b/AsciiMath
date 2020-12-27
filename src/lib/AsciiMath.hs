@@ -7,7 +7,6 @@ import Exception                     (AsciimathException(ErrorAndSource)
                                      ,printAndExit,renderError)
 import Lexer                         (get_tokens)
 import Parser                        (parseAscii)
-import Passes                        (passes)
 import TeXWriter                     (writeTeX)
 
 readAscii :: String -> Either AsciimathException Code

@@ -157,10 +157,6 @@ writeRBracket r = cmd_ "right" ++ case r of
 writeSimpleExpr :: SimpleExpr -> String
 writeSimpleExpr = \case
     SEConst c -> writeConst c
-    Matrix css ->
-        let expr = intercalate " \\\\ " $
-                    map (intercalate " & " . map writeTeX) css
-         in cmdargs "begin" ["matrix"] ++ expr ++ cmdargs "end" ["matrix"]
     Delimited l e r ->
         writeLBracket l ++ writeCode e ++ writeRBracket r
     UnaryApp o e ->
@@ -194,10 +190,15 @@ writeExpr = \case
         "_{" ++ writeSimpleExprND e2 ++ "}" ++
         "^{" ++ writeSimpleExprND e3 ++ "}"
 
--- Writes a code block
-writeCode :: Code -> String
-writeCode = foldr (\e s -> writeExpr e ++ s) ""
+writeExprs :: [Expr] -> String
+writeExprs = concatMap writeExpr
 
 -- The main writer
-writeTeX :: Code -> String
-writeTeX = writeCode
+writeTeX, writeCode :: Code -> String
+writeTeX  = writeCode
+writeCode = \case
+    Exprs es -> writeExprs es
+    Matrix rowList ->
+        let expr = intercalate " \\\\ " $
+                    map (intercalate " & " . map writeExprs) rowList
+         in cmdargs "begin" ["matrix"] ++ expr ++ cmdargs "end" ["matrix"]
