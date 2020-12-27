@@ -57,7 +57,6 @@ data SimpleExpr =
   | UnaryApp UnaryOp SimpleExpr
   | BinaryApp BinaryOp SimpleExpr SimpleExpr
   | Raw String  -- raw text, redered in a \textrm
-  | WithSpace SimpleExpr
   deriving(Show, Eq)
 
 -- Global expressions
