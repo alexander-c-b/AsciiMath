@@ -80,6 +80,7 @@ import Lexer
   BSLASH      { (BSLASH, _) }
   QUAD        { (QUAD, _) }
   SPACE       { (SPACE, _) }
+  SMALLSPACE  { (SMALLSPACE, _) }
   DIAMOND     { (DIAMOND, _) }
   SQUARE      { (SQUARE, _) }
   LFLOOR      { (LFLOOR, _) }
@@ -233,6 +234,7 @@ const :  LETTERS     { let (LETTERS s, _) = $1 in Letters s }
       |  BSLASH      { Bslash }
       |  QUAD        { Quad }
       |  SPACE       { Space }
+      |  SMALLSPACE  { SmallSpace }
       |  DIAMOND     { Diamond }
       |  SQUARE      { Square }
       |  LFLOOR      { Lfloor }
@@ -333,7 +335,7 @@ happyError tokens =
   Left $ LexicalError (show tok) pos
 
 potentialSpace :: Expr -> [Expr] -> [Expr]
-potentialSpace (Simple (SEConst (Diff _))) = (Simple (SEConst Space) :)
+potentialSpace (Simple (SEConst (Diff _))) = (Simple (SEConst SmallSpace) :)
 potentialSpace _ = id
 
 -- Conversion

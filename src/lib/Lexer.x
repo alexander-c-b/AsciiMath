@@ -37,6 +37,7 @@ tokens :-
   <0>       @rdel       { \_ s -> (RDEL s, 0) }
   <0>       @sym1       { \_ s -> (check_sym1 s, 0) }
   <0>       \\\         { cst SPACE }
+  <0>       \\\,        { cst SMALLSPACE }
   <0>       &           { cst AMPERSAND }
   <0>       \;\;        { cst DOUBLESEMICOLON }
   <0>       "+-"        { cst ADDSUB }
@@ -102,7 +103,7 @@ data Token =
   | INT | OINT | DEL | GRAD | ADDSUB | VOID | INFTY | ALEPH
   | ANGLE | THEREFORE | ABS | CDOTS | VDOTS | DDOTS | BSLASH
   | QUAD | DIAMOND | SQUARE | LFLOOR | RFLOOR | LCEIL | RCEIL
-  | CC | ENSNN | QQ | RR | ZZ | SPACE
+  | CC | ENSNN | QQ | RR | ZZ | SPACE | SMALLSPACE
   -- Matrix symbols
   | AMPERSAND | DOUBLESEMICOLON
   -- Relation symbols
