@@ -30,6 +30,7 @@ $escaped = [\< \> \; \']
 tokens :-
   <0>       $white+     ;
   <0>       @ident      { \_ s -> (check_kw s, 0) }
+  <0>       \\d         { cst (LETTERS "d") }
   <0>       @real       { \_ s -> (NUM s, 0) }
   <0>       $digit+     { \_ s -> (NUM s, 0) }
   <0>       @ldel       { \_ s -> (LDEL s, 0) }
