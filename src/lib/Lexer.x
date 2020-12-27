@@ -30,6 +30,7 @@ $escaped = [\< \> \; \']
 tokens :-
   <0>       $white+     ;
   <0>       @ident      { \_ s -> (check_kw s, 0) }
+  <0>       \\d         { cst (LETTERS "d") }
   <0>       @real       { \_ s -> (NUM s, 0) }
   <0>       $digit+     { \_ s -> (NUM s, 0) }
   <0>       @ldel       { \_ s -> (LDEL s, 0) }
@@ -80,6 +81,7 @@ data Token =
   RAW String
   | WHITE
   | LETTERS String
+  | DIFF String
   | NUM String
   | LDEL String
   | RDEL String
@@ -179,8 +181,9 @@ check_kw s = case M.lookup s kws of
           GREEK s
         else if S.member s std_fun then
             STDFUN s
-          else
-            LETTERS s
+          else case s of
+            ('d':xs) -> DIFF xs
+            _        -> LETTERS s
 
 sym1 :: M.Map String Token
 sym1 = M.fromList [

@@ -2,8 +2,7 @@
   , MultiParamTypeClasses
   , FlexibleContexts
   , FlexibleInstances #-}
-module Ast (Code,Expr(..),SimpleExpr(..),RBracket(..),LBracket(..)
-           ,BinaryOp(..),UnaryOp(..),Constant(..),walkC,walkS) where
+module Ast where
 
 -- Constants : variables, numbers, etc.
 data Constant =
@@ -11,6 +10,7 @@ data Constant =
   | Number String
   | GreekLetter String
   | StdFun String
+  | Diff String
   -- Operation symbols
   | Add | Sub | Mul | Mmul | Mmmul | Sslash | Bbslash
   | Times | Div | Comp | Oplus | Otimes | Odot
@@ -20,8 +20,6 @@ data Constant =
   | Angle | Therefore | Abs | Cdots | Vdots | Ddots | Bslash
   | Quad | Diamond | Square | Lfloor | Rfloor | Lceil | Rceil
   | Cc | Ensnn | Qq | Rr | Zz | Space
-  -- Matrix symbols
-  | Ampersand | DoubleSemicolon
   -- Relation symbols
   | Eq | Neq | Lt | Gt | Le | Ge | Prec | Succ
   | In | Notin | Subset | Supset | Subsete | Supsete
@@ -56,10 +54,10 @@ data RBracket = RPar | RCro | RBra | RChe | RBraCons deriving (Show, Eq)
 data SimpleExpr =
   SEConst Constant
   | Delimited LBracket Code RBracket
-  | Matrix [[Code]]
   | UnaryApp UnaryOp SimpleExpr
   | BinaryApp BinaryOp SimpleExpr SimpleExpr
   | Raw String  -- raw text, redered in a \textrm
+  | WithSpace SimpleExpr
   deriving(Show, Eq)
 
 -- Global expressions
@@ -72,30 +70,4 @@ data Expr =
   deriving (Show, Eq)
 
 -- Whole asciimath code
-type Code = [Expr]
-
------------------------
--- AST Walking
------------------------
-walkC :: (Code -> Code) -> Code -> Code
-walkC f = f . walkCodeSimple (walkSimpleCode f)
-
-walkS :: (SimpleExpr -> SimpleExpr) -> SimpleExpr -> SimpleExpr
-walkS f = f . walkSimpleCode (walkCodeSimple f)
-
-walkCodeSimple :: (SimpleExpr -> SimpleExpr) -> Code -> Code
-walkCodeSimple f = map $ \case
-    Simple s          -> Simple   (f s)
-    Frac s1 s2        -> Frac     (f s1) (f s2)
-    Under s1 s2       -> Under    (f s1) (f s2)
-    Super s1 s2       -> Super    (f s1) (f s2)
-    SubSuper s1 s2 s3 -> SubSuper (f s1) (f s2) (f s3)
-
-walkSimpleCode :: (Code -> Code) -> SimpleExpr -> SimpleExpr
-walkSimpleCode f = let walkF = walkSimpleCode f in \case
-    SEConst c            -> SEConst c
-    Delimited lbr es rbr -> Delimited lbr (f es) rbr
-    Matrix cs            -> Matrix (map (map f) cs)
-    UnaryApp op s        -> UnaryApp op (walkF s)
-    BinaryApp op s1 s2   -> BinaryApp op (walkF s1) (walkF s2)
-    Raw string           -> Raw string
+data Code = Matrix [[[Expr]]] | Exprs [Expr] deriving (Show,Eq)
