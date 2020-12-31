@@ -339,17 +339,17 @@ potentialSpace (Simple (SEConst (Diff _))) = (Simple (SEConst SmallSpace) :)
 potentialSpace _ = id
 
 -- Conversion
-rdel :: String -> RBracket
-rdel ")" = RPar
-rdel "]" = RCro
-rdel "}" = RBra
-rdel ":)" = RChe
-rdel ":}" = RBraCons
+rdel :: String -> Delimiter
+rdel ")" = Parenthesis
+rdel "]" = Bracket
+rdel "}" = Brace
+rdel ":)" = AngleBracket
+rdel ":}" = Invisible
 
-ldel :: String -> LBracket
-ldel "(" = LPar
-ldel "[" = LCro
-ldel "{" = LBra
-ldel "(:" = LChe
-ldel "{:" = LBraCons
+ldel :: String -> Delimiter
+ldel "(" = Parenthesis
+ldel "[" = Bracket
+ldel "{" = Brace
+ldel "(:" = AngleBracket
+ldel "{:" = Invisible
 }
