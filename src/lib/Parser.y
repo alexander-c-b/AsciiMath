@@ -332,7 +332,7 @@ thenE (Right x) f = f x
 
 happyError tokens =
   let (tok, pos) = head tokens in
-  Left $ LexicalError (show tok) pos
+  Left $ AsciiError Parser (show tok) pos
 
 potentialSpace :: Expr -> [Expr] -> [Expr]
 potentialSpace (Simple (SEConst (Diff _))) = (Simple (SEConst SmallSpace) :)

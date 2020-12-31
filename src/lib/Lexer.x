@@ -286,7 +286,7 @@ alexScanTokens s = go (alexStartPos,'\n',[],s) 0
               AlexEOF -> Right []
               AlexError (errPos,_,_,remaining) ->
                 let msg = cut remaining in
-                Left $ LexicalError msg errPos
+                Left $ AsciiError Lexical msg errPos
               AlexSkip inp' _ -> go inp' sc
               AlexToken inp' len act ->
                 let (tok, new_sc) = act pos (take len str) in
