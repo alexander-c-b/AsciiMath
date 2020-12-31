@@ -1,15 +1,23 @@
-{-# LANGUAGE LambdaCase
-  , MultiParamTypeClasses
-  , FlexibleContexts
-  , FlexibleInstances #-}
+{-# LANGUAGE LambdaCase #-}
 module Ast where
 
--- Constants : variables, numbers, etc.
-data Constant =
-  Letters String
+data Code = Matrix [[[Expr]]] | Exprs [Expr] 
+  deriving (Show,Eq)
+data Expr = Simple Simple | Frac Simple Simple
+  deriving (Show,Eq)
+data Simple = Term Term | Unary UnaryOp Term | Binary BinaryOp Term Term
+  deriving (Show,Eq)
+data Term = STerm STerm | Sub STerm STerm | Super STerm STerm
+          | SubSuper STerm STerm STerm
+          deriving (Show,Eq)
+data STerm = Text String | Delimited Delimiter Code Delimiter 
+           | Constant Constant
+           deriving (Show,Eq)
+
+data Constant
+  = Letters String
   | Number String
   | GreekLetter String
-  | StdFun String
   | Diff String
   -- Operation symbols
   | Add | Sub | Mul | Mmul | Mmmul | Sslash | Bbslash
@@ -30,43 +38,18 @@ data Constant =
   -- Arrows
   | Uarr | Darr | Larr | To
   | Mapsto | Harr | Llarr
-  -- Additionnal symbols
+  -- Additional symbols
   | Comma | Dot | Semicolon | Quote | Facto
   deriving (Show, Eq)
 
--- Unary operators
-data UnaryOp =
-  Usqrt | Utext
+data UnaryOp
+  = Usqrt | Utext
   | Ubb | Ubbb | Ucc | Utt | Ufr | Usf
   | Utilde | Uhat | Ubar | Uul | Uvec | Udot | Uddot
+  | SimpleUnary String
   deriving (Show, Eq)
 
--- Binary operators
 data BinaryOp = BFrac | BRoot | BStackRel deriving (Show, Eq)
 
--- Left brackets
-data LBracket = LPar | LCro | LBra | LChe | LBraCons deriving (Show, Eq)
-
--- Right brackets
-data RBracket = RPar | RCro | RBra | RChe | RBraCons deriving (Show, Eq)
-
--- Simple expressions
-data SimpleExpr =
-  SEConst Constant
-  | Delimited LBracket Code RBracket
-  | UnaryApp UnaryOp SimpleExpr
-  | BinaryApp BinaryOp SimpleExpr SimpleExpr
-  | Raw String  -- raw text, rendered in a \text
-  deriving(Show, Eq)
-
--- Global expressions
-data Expr =
-  Simple SimpleExpr
-  | Frac SimpleExpr SimpleExpr
-  | Under SimpleExpr SimpleExpr
-  | Super SimpleExpr SimpleExpr
-  | SubSuper SimpleExpr SimpleExpr SimpleExpr
-  deriving (Show, Eq)
-
--- Whole asciimath code
-data Code = Matrix [[[Expr]]] | Exprs [Expr] deriving (Show,Eq)
+data Delimiter = Parenthesis | Bracket | Brace | AngleBracket | Invisible
+  deriving (Show,Eq)
