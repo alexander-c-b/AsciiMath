@@ -182,7 +182,7 @@ check_kw s = case M.lookup s kws of
     Nothing ->
         if S.member s greek_letters then
           GREEK s
-        else if S.member s std_fun then
+        else if S.member s simple_unary then
             SIMPLEUNARY s
           else LETTERS s
 

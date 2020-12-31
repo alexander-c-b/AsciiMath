@@ -7,7 +7,7 @@ data Expr = Simple Simple | Frac Simple Simple
   deriving (Show,Eq)
 data Simple = Term Term | Unary UnaryOp Term | Binary BinaryOp Term Term
   deriving (Show,Eq)
-data Term = STerm STerm | Sub STerm STerm | Super STerm STerm
+data Term = STerm STerm | Under STerm STerm | Super STerm STerm
           | SubSuper STerm STerm STerm
           deriving (Show,Eq)
 data STerm = Text String | Delimited Delimiter Code Delimiter 
