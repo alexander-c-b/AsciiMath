@@ -29,6 +29,7 @@ $escaped = [\< \> \; \']
 -- The lexer rules
 tokens :-
   <0>       $white+     ;
+  <0>       d @ident?   { \_ s -> (DIFF (tail s), 0) }
   <0>       @ident      { \_ s -> (check_kw s, 0) }
   <0>       \\d         { cst (LETTERS "d") }
   <0>       @real       { \_ s -> (NUM s, 0) }
@@ -78,19 +79,20 @@ tokens :-
 
 {
 -- Token type
-data Token =
-  RAW String
+data Token
+  = RAW String
   | WHITE
   | LETTERS String
   | DIFF String
   | NUM String
   | LDEL String
   | RDEL String
-  | SLASH | UNDERSCORE | SUPER
+  | SLASH
+  | UNDERSCORE | SUPER
   -- Greek letters
   | GREEK String
   -- Standard functions
-  | STDFUN String
+  | SIMPLEUNARY String
   -- Unary ops
   | SQRT | TEXT | BB | BBB | UCC | TT | FR | SF
   --Binary ops
@@ -167,8 +169,8 @@ greek_letters = S.fromList [
   "psi", "Psi", "rho", "sigma", "Sigma", "tau", "theta", "Theta",
   "vartheta", "upsilon", "xi", "Xi", "zeta"]
 
-std_fun :: S.Set String
-std_fun = S.fromList [
+simple_unary :: S.Set String
+simple_unary = S.fromList [
   "sin", "cos", "tan", "csc", "sec", "cot",
   "sinh", "cosh", "tanh", "log", "ln", "exp", "det", "dim", "lim", "mod",
   "gcd", "lcm", "min", "max"]
@@ -181,10 +183,8 @@ check_kw s = case M.lookup s kws of
         if S.member s greek_letters then
           GREEK s
         else if S.member s std_fun then
-            STDFUN s
-          else case s of
-            ('d':xs) -> DIFF xs
-            _        -> LETTERS s
+            SIMPLEUNARY s
+          else LETTERS s
 
 sym1 :: M.Map String Token
 sym1 = M.fromList [
