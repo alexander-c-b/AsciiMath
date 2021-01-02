@@ -28,7 +28,7 @@ import Lexer
   '&'         { (AMPERSAND, _) }
   ';;'        { (DOUBLESEMICOLON, _) }
   GREEK       { (GREEK _, _) }
-  SIMPLEUNARY { (STDFUN _, _) }
+  SIMPLEUNARY { (SIMPLEUNARY _, _) }
   SQRT        { (SQRT, _) }
   TEXT        { (TEXT, _) }
   BB          { (BB, _) }
@@ -172,7 +172,7 @@ spaceExprs :: { [Expr] }
 -- Expressions {{{1
 expr :: { Expr }
      :  simple            { Simple $1 }
-     |  simple '/' simple { Frac (toInvisible $1) (toInvisible $2) }
+     |  simple '/' simple { Frac (toInvisible $1) (toInvisible $3) }
 
 -- Simple Expressions {{{1
 simple :: { Simple }
@@ -182,14 +182,14 @@ simple :: { Simple }
 
 -- Term {{{1
 term :: { Term }
-     :  sterm                     { STerm }
+     :  sterm                     { STerm $1 }
      |  sterm '_' sterm           { Under $1 $3 }
      |  sterm '^' sterm           { Super $1 $3 }
      |  sterm '_' sterm '^' sterm { SubSuper $1 $3 $5 }
 
 -- STerm {{{1
 sterm :: { STerm }
-      :  RAW                       { toRaw $1 }
+      :  RAW                       { let (RAW s, _) = $1 in Text s }
       |  constant                  { Constant $1 }
       |  leftDelim code rightDelim { Delimited $1 $2 $3 }
 
@@ -328,7 +328,7 @@ binary :: { BinaryOp }
 -- Delimiters {{{1
 leftDelim  :: { Delimiter }
            :  LDEL { let (LDEL s, _) = $1 in ldel s }
-rightDelim :: { RBracket }
+rightDelim :: { Delimiter }
            :  RDEL { let (RDEL s, _) = $1 in rdel s }
 
 -- Function Definitions {{{1
@@ -342,10 +342,15 @@ happyError tokens =
   let (tok, pos) = head tokens in
   Left $ AsciiError Parser (show tok) pos
 
-potentialSpace :: Expr -> [Expr] -> [Expr]
-potentialSpace (Simple (Term (STerm (Constant (Diff _))))) =
+differentialSpace :: Expr -> [Expr] -> [Expr]
+differentialSpace (Simple (Term (STerm (Constant (Diff _))))) =
   ((Simple $ Term $ STerm $ Constant SmallSpace) :)
-potentialSpace _ = id
+differentialSpace _ = id
+
+toInvisible :: Simple -> Simple
+toInvisible (Term (STerm (Delimited _ code _))) =
+  Term $ STerm $ Delimited Invisible code Invisible
+toInvisible x = x
 
 -- Conversion
 rdel :: String -> Delimiter
