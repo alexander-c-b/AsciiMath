@@ -3,7 +3,7 @@ version:              0.1.0.0
 synopsis:             Compiler from ASCIIMath to LaTeX
 description:          AsciiMath is a Haskell library for converting from
                       asciimath to LaTeX. See README.md for further information.
-homepage:             https://github.com/zandroidius/AsciiMath
+homepage:             https://github.com/alexander-c-b/AsciiMath
 license:              MIT
 license-file:         LICENSE
 author:               Alexander C. Bodoh
@@ -49,4 +49,4 @@ test-suite asciimath-test
 
 source-repository head
   type:                 git
-  location:             https://github.com/zandroidius/AsciiMath
+  location:             https://github.com/alexander-c-b/AsciiMath
