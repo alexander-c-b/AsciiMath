@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Ast where
 
-data Code = Matrix [[[Expr]]] | Exprs [Expr] 
+data Code = Matrix [[[Expr]]] | Exprs [Expr]
   deriving (Show,Eq)
 data Expr = Simple Simple | Frac Simple Simple
   deriving (Show,Eq)
@@ -10,8 +10,8 @@ data Simple = Term Term | Unary UnaryOp Term | Binary BinaryOp Term Term
 data Term = STerm STerm | Under STerm STerm | Super STerm STerm
           | SubSuper STerm STerm STerm
           deriving (Show,Eq)
-data STerm = Text String | Delimited Delimiter Code Delimiter 
-           | Constant Constant
+data STerm = Text String  | Delimited Delimiter Code Delimiter
+           | Grouped Code | Constant Constant
            deriving (Show,Eq)
 
 data Constant

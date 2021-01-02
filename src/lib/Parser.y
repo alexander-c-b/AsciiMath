@@ -172,7 +172,7 @@ spaceExprs :: { [Expr] }
 -- Expressions {{{1
 expr :: { Expr }
      :  simple            { Simple $1 }
-     |  simple '/' simple { Frac (toInvisible $1) (toInvisible $3) }
+     |  simple '/' simple { Frac (toGrouped $1) (toGrouped $3) }
 
 -- Simple Expressions {{{1
 simple :: { Simple }
@@ -347,10 +347,10 @@ differentialSpace (Simple (Term (STerm (Constant (Diff _))))) =
   ((Simple $ Term $ STerm $ Constant SmallSpace) :)
 differentialSpace _ = id
 
-toInvisible :: Simple -> Simple
-toInvisible (Term (STerm (Delimited _ code _))) =
-  Term $ STerm $ Delimited Invisible code Invisible
-toInvisible x = x
+toGrouped :: Simple -> Simple
+toGrouped (Term (STerm (Delimited _ code _))) =
+  Term $ STerm $ Grouped code
+toGrouped x = x
 
 -- Conversion
 rdel :: String -> Delimiter
