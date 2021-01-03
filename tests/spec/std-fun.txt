@@ -1,20 +1,23 @@
 # Standard functions
 sin
-cos
-tan
-csc
-sec
-cot
+sin x
+sin^2 x
+cos x
+cos^3 x^2
+tan (pi t)
+csc x
+sec x
+cot x
 sinh
 cosh
 tanh
-log
-ln
-det
-dim
-lim
-mod
-gcd
-lcm
-min
-max
+log x
+ln x
+det x
+dim x
+lim x
+mod x
+gcd x
+lcm x
+min (x, y)
+max (x, y)

@@ -78,15 +78,16 @@ tokens :-
 
 {
 -- Token type
-data Token =
-  RAW String
+data Token
+  = RAW String
   | WHITE
   | LETTERS String
   | DIFF String
   | NUM String
   | LDEL String
   | RDEL String
-  | SLASH | UNDERSCORE | SUPER
+  | SLASH
+  | UNDERSCORE | SUPER
   -- Greek letters
   | GREEK String
   -- Standard functions
