@@ -28,7 +28,7 @@ import Lexer
   '&'         { (AMPERSAND, _) }
   ';;'        { (DOUBLESEMICOLON, _) }
   GREEK       { (GREEK _, _) }
-  SIMPLEUNARY { (SIMPLEUNARY _, _) }
+  STDFUN      { (STDFUN _, _) }
   SQRT        { (SQRT, _) }
   TEXT        { (TEXT, _) }
   BB          { (BB, _) }
@@ -199,6 +199,7 @@ constant :: { Constant }
          |  DIFF        { let (DIFF s,    _) = $1 in Diff s }
          |  NUM         { let (NUM n,     _) = $1 in Number n }
          |  GREEK       { let (GREEK s,   _) = $1 in GreekLetter s }
+         |  STDFUN      { let (STDFUN s, _)  = $1 in StdFun s }
          -- Operation symbols
          |  ADD         { Add }
          |  SUB         { Sub }
@@ -317,7 +318,6 @@ unary :: { UnaryOp }
       |  VEC         { Uvec }
       |  DOTOP       { Udot }
       |  DDOT        { Uddot }
-      |  SIMPLEUNARY { let (SIMPLEUNARY s, _) = $1 in SimpleUnary s }
 
 -- Binary Functions {{{1
 binary :: { BinaryOp }

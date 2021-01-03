@@ -1,13 +1,16 @@
 # Standard functions
+sin
 sin x
+sin^2 x
 cos x
-tan x
+cos^3 x^2
+tan (pi t)
 csc x
 sec x
 cot x
-sinh x
-cosh x
-tanh x
+sinh
+cosh
+tanh
 log x
 ln x
 det x

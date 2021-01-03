@@ -15,7 +15,7 @@ tests = TestList <$> sequence [
   mkTestSuite "Accents" "accents",
   mkTestSuite "Font commands" "fonts",
   mkTestSuite "Matrices" "matrices",
-  mkTestSuite "Simple Unary Functions" "simple-unary"]
+  mkTestSuite "Standard functions" "std-fun"]
 
 main :: IO ()
 main = run =<< tests

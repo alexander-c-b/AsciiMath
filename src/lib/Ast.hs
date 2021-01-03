@@ -18,6 +18,7 @@ data Constant
   = Letters String
   | Number String
   | GreekLetter String
+  | StdFun String
   | Diff String
   -- Operation symbols
   | Add | Sub | Mul | Mmul | Mmmul | Sslash | Bbslash
@@ -46,7 +47,6 @@ data UnaryOp
   = Usqrt | Utext
   | Ubb | Ubbb | Ucc | Utt | Ufr | Usf
   | Utilde | Uhat | Ubar | Uul | Uvec | Udot | Uddot
-  | SimpleUnary String
   deriving (Show, Eq)
 
 data BinaryOp = BFrac | BRoot | BStackRel deriving (Show, Eq)

@@ -91,7 +91,7 @@ data Token
   -- Greek letters
   | GREEK String
   -- Standard functions
-  | SIMPLEUNARY String
+  | STDFUN String
   -- Unary ops
   | SQRT | TEXT | BB | BBB | UCC | TT | FR | SF
   --Binary ops
@@ -168,8 +168,8 @@ greek_letters = S.fromList [
   "psi", "Psi", "rho", "sigma", "Sigma", "tau", "theta", "Theta",
   "vartheta", "upsilon", "xi", "Xi", "zeta"]
 
-simple_unary :: S.Set String
-simple_unary = S.fromList [
+std_fun :: S.Set String
+std_fun = S.fromList [
   "sin", "cos", "tan", "csc", "sec", "cot",
   "sinh", "cosh", "tanh", "log", "ln", "exp", "det", "dim", "lim", "mod",
   "gcd", "lcm", "min", "max"]
@@ -181,8 +181,8 @@ check_kw s = case M.lookup s kws of
     Nothing ->
         if S.member s greek_letters then
           GREEK s
-        else if S.member s simple_unary then
-            SIMPLEUNARY s
+        else if S.member s std_fun then
+            STDFUN s
           else case s of
             ('d':xs) -> DIFF xs
             _        -> LETTERS s

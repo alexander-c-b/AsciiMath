@@ -15,10 +15,11 @@ cmdargs c = concat . (cmd_ c:) . map (\a -> "{" ++ a ++ "}")
 writeConstant :: Constant -> String
 writeConstant = \case
     -- Operation symbols
-    (GreekLetter s) -> cmd s
-    (Letters s) -> s
-    (Diff s)    -> cmdargs "text" ["d"] ++ s
-    (Number n)  -> n
+    GreekLetter s -> cmd s
+    Letters s   -> s
+    Diff s      -> cmdargs "text" ["d"] ++ s
+    Number n    -> n
+    StdFun s    -> cmd s
     Add         -> "+"
     Sub         -> "-"
     Mul         -> cmd "cdot"
@@ -136,7 +137,6 @@ writeUnaryOp = \case
     Uvec   -> "vec"
     Udot   -> "dot"
     Uddot  -> "ddot"
-    SimpleUnary s -> s
 
 -- Writes the delimiters
 writeLeftDelim, writeRightDelim :: Delimiter -> String
