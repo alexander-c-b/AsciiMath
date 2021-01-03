@@ -2,7 +2,7 @@
 
 AsciiMath is a compiler from the [AsciiMath](http://asciimath.org/) language to LaTeX.
 
-Please note: compatability with either the original AsciiMath or [Kerl13/AsciiMath](https://github.com/Kerl13/AsciiMath) is **an explicit non-goal**.  While the original projects are excellent, the standard AsciiMath lacks several features important to my needs, namely a less verbose matrix syntax and a syntax for units (see issue #11).
+Please note: compatability with either the original AsciiMath or [Kerl13/AsciiMath](https://github.com/Kerl13/AsciiMath) is **an explicit non-goal**.  While the original projects are excellent, the standard AsciiMath lacks several features important to my needs, namely a less verbose matrix syntax and a syntax for units (see issue [#11](https://github.com/alexander-c-b/AsciiMath/issues/11)).
 
 The aim of this project is most importantly to provide a [Pandoc](http://pandoc.org) filter to use AsciiMath in Markdown documents.
 
@@ -120,7 +120,7 @@ matrix. More precisely:
           &=& 0.
     ```
 
-    As shown, this is useful for long, aligned equations.  Eventually it may become possible to specify column alignments (see issue #19).
+    As shown, this is useful for long, aligned equations.  Eventually it may become possible to specify column alignments (see issue [#19](https://github.com/alexander-c-b/AsciiMath/issues/19)).
 
 ## License
 
