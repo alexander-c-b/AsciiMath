@@ -12,8 +12,8 @@ cmd = cmd_ . (++ " ")
 cmdargs :: String -> [String] -> String
 cmdargs c = concat . (cmd_ c:) . map (\a -> "{" ++ a ++ "}")
 
-writeConst :: Constant -> String
-writeConst = \case
+writeConstant :: Constant -> String
+writeConstant = \case
     -- Operation symbols
     (GreekLetter s) -> cmd s
     (Letters s) -> s
@@ -136,38 +136,54 @@ writeUnaryOp = \case
     Uvec   -> "vec"
     Udot   -> "dot"
     Uddot  -> "ddot"
+    SimpleUnary s -> s
 
 -- Writes the delimiters
-writeLeftDelim :: Delimiter -> String
-writeLeftDelim d = cmd_ "left" ++ case l of
+writeLeftDelim, writeRightDelim :: Delimiter -> String
+writeLeftDelim l = cmd_ "left" ++ case l of
   Parenthesis  -> "("
   Bracket      -> "["
   Brace        -> "\\{"
   AngleBracket -> cmd "langle"
   Invisible    -> "."
-writeRBracket r = cmd_ "right" ++ case r of
+writeRightDelim r = cmd_ "right" ++ case r of
   Parenthesis  -> ")"
   Bracket      -> "]"
   Brace        -> "\\}"
   AngleBracket -> cmd "rangle"
   Invisible    -> "."
 
+writeSTerm :: STerm -> String
+writeSTerm = \case
+  Constant c      -> writeConstant c
+  Delimited l e r -> writeLeftDelim l ++ writeCode e ++ writeRightDelim r
+  Grouped code    -> "{" ++ writeCode code ++ "}"
+  Text s          -> cmdargs "text" [s]
+
 writeTerm :: Term -> String
 writeTerm = \case
-  
+  STerm st -> writeSTerm st
+  Under st1 st2 ->
+      writeSTerm st1 ++ "_{" ++ writeSTerm st2 ++ "}"
+  Super st1 st2 ->
+      writeSTerm st1 ++ "^{" ++ writeSTerm st2 ++ "}"
+  SubSuper st1 st2 st3 ->
+      writeSTerm st1 ++
+      "_{" ++ writeSTerm st2 ++ "}" ++
+      "^{" ++ writeSTerm st3 ++ "}"
 
 -- Writes a simple expression
 writeSimple :: Simple -> String
 writeSimple = \case
   Term t -> writeTerm t
-  Unary o e ->
-      cmdargs (writeUnaryOp o) [writeSimpleExprND e]
-  Binary BFrac e1 e2 ->
-      cmdargs "frac" [writeSimpleExprND e1, writeSimpleExprND e2]
-  Binary BRoot e1 e2 ->
-      cmdargs ("sqrt[" ++ writeSimpleExpr e1 ++ "]") [writeSimpleExpr e2]
-  Binary BStackRel e1 e2 ->
-      cmdargs "stackrel" [writeSimpleExpr e1, writeSimpleExpr e2]
+  Unary o t ->
+      cmdargs (writeUnaryOp o) [writeTerm t]
+  Binary BFrac t1 t2 ->
+      cmdargs "frac" [writeTerm t1, writeTerm t2]
+  Binary BRoot t1 t2 ->
+      cmdargs ("sqrt[" ++ writeTerm t1 ++ "]") [writeTerm t2]
+  Binary BStackRel t1 t2 ->
+      cmdargs "stackrel" [writeTerm t1, writeTerm t2]
 
 -- Writes an expression
 writeExpr :: Expr -> String
@@ -176,18 +192,15 @@ writeExpr = \case
   Frac s1 s2 -> cmdargs "frac" (map writeSimple [s1,s2])
 
 
-    Under e1 e2 ->
-        writeSimpleExpr e1 ++ "_{" ++ writeSimpleExprND e2 ++ "}"
-    Super e1 e2 ->
-        writeSimpleExpr e1 ++ "^{" ++ writeSimpleExprND e2 ++ "}"
-    SubSuper e1 e2 e3 ->
-        writeSimpleExpr e1 ++
-        "_{" ++ writeSimpleExprND e2 ++ "}" ++
-        "^{" ++ writeSimpleExprND e3 ++ "}"
-    SEConst c -> writeConst c
-    Delimited l e r ->
-        writeLBracket l ++ writeCode e ++ writeRBracket r
-    Raw s -> cmdargs "text" [s]
-
 writeExprs :: [Expr] -> String
 writeExprs = concatMap writeExpr
+
+-- The main writer
+writeTeX, writeCode :: Code -> String
+writeTeX  = writeCode
+writeCode = \case
+    Exprs es -> writeExprs es
+    Matrix rows ->
+        let expr = intercalate " \\\\ " $
+                    map (intercalate " & " . map writeExprs) rows
+         in cmdargs "begin" ["matrix"] ++ expr ++ cmdargs "end" ["matrix"]

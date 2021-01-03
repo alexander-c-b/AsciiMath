@@ -29,7 +29,6 @@ $escaped = [\< \> \; \']
 -- The lexer rules
 tokens :-
   <0>       $white+     ;
-  <0>       d @ident?   { \_ s -> (DIFF (tail s), 0) }
   <0>       @ident      { \_ s -> (check_kw s, 0) }
   <0>       \\d         { cst (LETTERS "d") }
   <0>       @real       { \_ s -> (NUM s, 0) }
@@ -184,7 +183,9 @@ check_kw s = case M.lookup s kws of
           GREEK s
         else if S.member s simple_unary then
             SIMPLEUNARY s
-          else LETTERS s
+          else case s of
+            ('d':xs) -> DIFF xs
+            _        -> LETTERS s
 
 sym1 :: M.Map String Token
 sym1 = M.fromList [

@@ -172,7 +172,7 @@ spaceExprs :: { [Expr] }
 -- Expressions {{{1
 expr :: { Expr }
      :  simple            { Simple $1 }
-     |  simple '/' simple { Frac (toGrouped $1) (toGrouped $3) }
+     |  simple '/' simple { Frac (toGroupedSimple $1) (toGroupedSimple $3) }
 
 -- Simple Expressions {{{1
 simple :: { Simple }
@@ -183,9 +183,9 @@ simple :: { Simple }
 -- Term {{{1
 term :: { Term }
      :  sterm                     { STerm $1 }
-     |  sterm '_' sterm           { Under $1 $3 }
-     |  sterm '^' sterm           { Super $1 $3 }
-     |  sterm '_' sterm '^' sterm { SubSuper $1 $3 $5 }
+     |  sterm '_' sterm           { Under $1 (toGroupedSTerm $3) }
+     |  sterm '^' sterm           { Super $1 (toGroupedSTerm $3) }
+     |  sterm '_' sterm '^' sterm { SubSuper $1 (toGroupedSTerm $3) (toGroupedSTerm $5) }
 
 -- STerm {{{1
 sterm :: { STerm }
@@ -347,10 +347,17 @@ differentialSpace (Simple (Term (STerm (Constant (Diff _))))) =
   ((Simple $ Term $ STerm $ Constant SmallSpace) :)
 differentialSpace _ = id
 
-toGrouped :: Simple -> Simple
-toGrouped (Term (STerm (Delimited _ code _))) =
-  Term $ STerm $ Grouped code
-toGrouped x = x
+toGroupedSimple :: Simple -> Simple
+toGroupedSimple (Term t) = Term (toGroupedTerm t)
+toGroupedSimple x = x
+
+toGroupedTerm :: Term -> Term
+toGroupedTerm (STerm st) = STerm (toGroupedSTerm st)
+toGroupedTerm x = x
+
+toGroupedSTerm :: STerm -> STerm
+toGroupedSTerm (Delimited _ code _) = Grouped code
+toGroupedSTerm x = x
 
 -- Conversion
 rdel :: String -> Delimiter
